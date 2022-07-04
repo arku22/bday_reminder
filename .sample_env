@@ -1,0 +1,4 @@
+twi_account_SID=<your twilio account SID>
+twi_auth_token=<your twilio account auth token>
+twi_sender_num=<your twilio phone number to use to send SMS>
+receiver_num=<twilio verified receiving phone number>

@@ -1,0 +1,5 @@
+*pycache*
+events.xlsx
+.idea/
+.DS_Store
+.env
