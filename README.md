@@ -14,6 +14,7 @@ This is a simple Python script that sends you a reminder via SMS using the Twili
 * openpyxl 3.0.7
 * git 2.36.1
 * Pycharm 2022
+
 For a more detailed list of python libraries used refer to the `requirements.txt` file in the working directory.
 
 ---
