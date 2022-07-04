@@ -1,4 +1,4 @@
-#BIRTHDAY REMINDER SCRIPT
+# BIRTHDAY REMINDER SCRIPT
 
 I have been embarrased far too many times by my friends wishing me a happy birthday while I keep forgetting their birthday year after year. This is my attempt at making up for it.
 
