@@ -6,7 +6,7 @@ This is a simple Python script that sends you a reminder via SMS using the Twili
 
 ---
 
-## Techologies
+## Technologies
 
 * Python 3.8.11
 * Google Sheets
