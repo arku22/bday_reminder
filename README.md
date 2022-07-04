@@ -22,7 +22,7 @@ For a more detailed list of python libraries used refer to the `requirements.txt
 
 1. [Setup](#setup)
 2. [Create a Twilio account](#creating-a-twilio-account)
-3. [Modifying Project Files](#modifying-project-files)
+3. [Modifying Project Files](#modifying-the-project-files)
 4. [Installing Python Dependencies](#installing-python-dependencies)
 5. [Running the Program](#running-the-program)
 6. [Scheduling the program to run automatically](#scheduling-the-program-to-run-automatically)
