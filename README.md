@@ -15,7 +15,7 @@ This is a simple Python script that sends you a reminder via SMS using the Twili
 * git 2.36.1
 * Pycharm 2022
 
-For a more detailed list of python libraries used refer to the `requirements.txt` file in the working directory.
+For a more detailed list of python libraries used refer to the `environment.yml` file in the working directory.
 
 ---
 
@@ -67,11 +67,7 @@ Run the following:
 
 If using 'Anaconda' for virtual environments:
 
-`$ conda env create --file environment.yaml`
-
-otherwise, if using 'pip' then:
-
-`$ pip install -r requirements.txt`
+`$ conda env create --file environment.yml`
 
 ### Running the program:
 
