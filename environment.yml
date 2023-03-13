@@ -1,0 +1,8 @@
+name: bday_reminder
+dependencies:
+  - python=3.8
+  - pip
+  - pip:
+      - twilio==6.63.2
+      - python-dotenv==0.20.0
+      - openpyxl==3.0.7
