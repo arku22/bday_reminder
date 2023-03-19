@@ -1,27 +1,32 @@
-import openpyxl as opex
 import datetime as dt
 from sms_config import send_message
 from pathlib import Path
+import pandas as pd
+
+def send_sms(row: pd.Series) -> None:
+    """
+    Builds sms message body and sends out sms
+    :param row: pd.Series
+    :return: None
+    """
+    sms_body = f"Today is {row['event_name']}'s {row['event_type']}!"
+    send_message(sms_body)
+
+    return
 
 
 # read in source data worksheet
 source_data = Path('.', 'sample_events.xlsx')  # set path & name of source file here
-wb = opex.load_workbook(source_data)
-sheet = wb.active
-data_end_row = sheet.max_row
-curr_year = dt.date.today().year
-DATA_START_ROW = 2
-HEADS_UP_DAYS = 1   # set here how many days ahead you want a reminder
-HEADS_UP_DELTA = dt.timedelta(days=HEADS_UP_DAYS)
+df = pd.read_excel(source_data,
+                   sheet_name=0,
+                   parse_dates=['event_month_day'])
+df['event_month_day'] = df['event_month_day'].dt.date
+HEADS_UP_DAYS = 0   # set here how many days ahead you want a reminder
+heads_up_days_delta = dt.timedelta(days=HEADS_UP_DAYS)
 
 # parse sheet for any events that need a reminder
-for row_num in range(DATA_START_ROW, data_end_row+1):
+df_alert_events = df.loc[(df['event_month_day']-heads_up_days_delta) == dt.date.today()]
 
-    event_date = sheet['A'+str(row_num)].value
+# send out sms alerts for events that are due
+df_alert_events.apply(send_sms, axis=1)
 
-    if dt.date.today() == (event_date.date()-HEADS_UP_DELTA):
-        event_name = sheet['C'+str(row_num)].value
-        event_type = sheet['B' + str(row_num)].value
-        body = f"Today is {event_name}'s {event_type}!"
-
-        send_message(body)
