@@ -10,18 +10,18 @@ wb = opex.load_workbook(source_data)
 sheet = wb.active
 data_end_row = sheet.max_row
 curr_year = dt.date.today().year
-data_start_row = 2
-heads_up_days = 1   # set here how many days ahead you want a reminder
-heads_up_delta = dt.timedelta(days=heads_up_days)
+DATA_START_ROW = 2
+HEADS_UP_DAYS = 1   # set here how many days ahead you want a reminder
+HEADS_UP_DELTA = dt.timedelta(days=HEADS_UP_DAYS)
 
 # parse sheet for any events that need a reminder
-for row_num in range(data_start_row, data_end_row+1):
-    event_day = int(sheet['A'+str(row_num)].value)
-    event_month = int(sheet['B'+str(row_num)].value)
-    event_date = dt.date(year=curr_year, month=event_month, day=event_day)
-    if dt.date.today() == (event_date-heads_up_delta):
-        event_name = sheet['D'+str(row_num)].value
-        event_type = sheet['C' + str(row_num)].value
+for row_num in range(DATA_START_ROW, data_end_row+1):
+
+    event_date = sheet['A'+str(row_num)].value
+
+    if dt.date.today() == (event_date.date()-HEADS_UP_DELTA):
+        event_name = sheet['C'+str(row_num)].value
+        event_type = sheet['B' + str(row_num)].value
         body = f"Today is {event_name}'s {event_type}!"
 
         send_message(body)
