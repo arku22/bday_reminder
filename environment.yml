@@ -6,3 +6,4 @@ dependencies:
       - twilio==6.63.2
       - python-dotenv==0.20.0
       - openpyxl==3.0.7
+      - pandas==1.5.3
