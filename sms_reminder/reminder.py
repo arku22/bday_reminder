@@ -62,7 +62,8 @@ class SMSReminder:
         :return: None
         """
         df = self.get_reminder_events(self.excel_file_path)
-        df.apply(self.send_sms, axis=1)
+        if not df.empty:    # only send out sms if due events were found
+            df.apply(self.send_sms, axis=1)
 
         return None
 
