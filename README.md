@@ -84,3 +84,5 @@ This program would of course not be useful if you had to run it manually on your
 3. [Raspberry Pi](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/)
 
 These are some of many possible ways to allow the script to be run automatically once a day and check whether there are any reminders that need to be sent via SMS. I used a paid account on 'Python Anywhere', although it might be cheaper to use Amazon EC2.
+
+**NOTE:** If running on a server, make sure the timezone set on the server matches your local time. By default, a server may be set to UTC and your script's SMS messages may not arrive at the expected time when scheduling on the server.
