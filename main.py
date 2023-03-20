@@ -2,7 +2,8 @@ from sms_reminder import SMSReminder
 from pathlib import Path
 
 
-excel_file_path = Path('.', 'events.xlsx')
+base_dir = Path(__file__).parent
+excel_file_path = Path(base_dir, 'events.xlsx')
 s_reminder = SMSReminder(excel_file_path=excel_file_path,
                          heads_up_days=0)
 

@@ -15,7 +15,7 @@ class SMSReminder:
     """
 
     def __init__(self,
-                 excel_file_path=Path('.', 'sample_events.xlsx'),
+                 excel_file_path=Path(Path(__file__).parent, 'sample_events.xlsx'),
                  heads_up_days=0):
 
         self.acc_sid = os.getenv("twi_account_SID")     # get this from your twilio account
