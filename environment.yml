@@ -1,6 +1,6 @@
 name: bday_reminder
 dependencies:
-  - python=3.8
+  - python=3.10
   - pip
   - pip:
       - twilio==6.63.2
