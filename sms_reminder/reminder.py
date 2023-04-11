@@ -4,41 +4,52 @@ import os
 from pathlib import Path
 import pandas as pd
 import datetime as dt
+import psycopg2
+from pathlib import Path
+from datetime import date
 
 
 # load required environment variables
 load_dotenv()
 
+
 class SMSReminder:
     """
-    A class that sends SMS reminders by reading through an Excel sheet and finding events that need a reminder sent out
+    A class that sends SMS reminders by querying a postgres database and finding events that need a reminder sent out
     """
 
     def __init__(self,
-                 excel_file_path=Path(Path(__file__).parent, 'sample_events.xlsx'),
                  heads_up_days=0):
 
         self.acc_sid = os.getenv("twi_account_SID")     # get this from your twilio account
         self.auth_token = os.getenv("twi_auth_token")   # get this from your twilio account
         self.twilio_sender = os.getenv("twi_sender_num")  # twilio phone number to send SMS
-        self.receiver = os.getenv("receiver_num")   # twilio verified phone number to  receive SMS
-        self.excel_file_path = excel_file_path
+        self.receiver = os.getenv("receiver_num")   # twilio verified phone number to receive SMS
         self.heads_up_days = heads_up_days  # Number of days ahead of the event the SMS should go out
 
-    def get_reminder_events(self, excel_file_path) -> pd.DataFrame:
+    def get_reminder_events(self) -> pd.DataFrame:
         """
-        This will parse the Excel worksheet for the events for which an SMS reminder is due at runtime
-        :return: pd.DataFrame of events filtered from Excel source
+        This will read records from a postgres database events for which an SMS reminder is due at runtime
+        :return: pd.DataFrame of events filtered with due reminders
         """
-        source_data = excel_file_path
-        df = pd.read_excel(source_data,
-                           sheet_name=0,
-                           parse_dates=['event_month_day'])
-        df['event_month_day'] = df['event_month_day'].dt.date
+        conn = psycopg2.connect(database=os.environ.get("database_name"),
+                                user=os.environ.get("database_user"),
+                                password=os.environ.get("database_user_password"),
+                                host=os.environ.get("database_host"),
+                                port=os.environ.get("database_port"))
+
+        # read sql query to query database
+        with open(Path(Path(__file__).parents[1], "assets/sql/get_event_reminders.sql"), 'r') as f:
+            sql_query = f.read()
+        df = pd.read_sql_query(sql_query, conn)
+
+        df["event_date"] = pd.to_datetime(df["event_date"], format="%m-%d").dt.date
+        df["event_date"] = df["event_date"].apply(lambda x: x.replace(year=2023))
+
         heads_up_days_delta = dt.timedelta(days=self.heads_up_days)
 
-        # parse sheet for any events that need a reminder
-        df_alert_events = df.loc[(df['event_month_day'] - heads_up_days_delta) == dt.date.today()]
+        # parse data for any events that need a reminder
+        df_alert_events = df.loc[(df['event_date'] - heads_up_days_delta) == dt.date.today()]
 
         return df_alert_events
 
@@ -48,7 +59,7 @@ class SMSReminder:
             :param row: pd.Series
             :return: None
             """
-        sms_body = f"Today is {row['event_name']}'s {row['event_type']}!"
+        sms_body = f"Today is {row['first_name'].title()}'s {row['event_type']}!"
 
         tcli = Client(self.acc_sid, self.auth_token)
         message = tcli.messages.create(body=sms_body,
@@ -61,7 +72,7 @@ class SMSReminder:
         Send out SMS reminder for due events
         :return: None
         """
-        df = self.get_reminder_events(self.excel_file_path)
+        df = self.get_reminder_events()
         if not df.empty:    # only send out sms if due events were found
             df.apply(self.send_sms, axis=1)
 
@@ -70,6 +81,5 @@ class SMSReminder:
 
 if __name__ == "__main__":
     excel_path = Path('.', 'sample_events.xlsx')
-    s_reminder = SMSReminder(excel_file_path=excel_path,
-                             heads_up_days=0)
+    s_reminder = SMSReminder(heads_up_days=0)
     s_reminder.send_event_reminder()
