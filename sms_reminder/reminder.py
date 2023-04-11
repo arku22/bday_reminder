@@ -1,12 +1,11 @@
 from twilio.rest import Client
 from dotenv import load_dotenv
 import os
-from pathlib import Path
 import pandas as pd
 import datetime as dt
 import psycopg2
 from pathlib import Path
-from datetime import date
+from jinja2 import Environment, FileSystemLoader
 
 
 # load required environment variables
@@ -59,9 +58,21 @@ class SMSReminder:
             :param row: pd.Series
             :return: None
             """
-        sms_body = f"Today is {row['first_name'].title()}'s {row['event_type']}!"
 
-        tcli = Client(self.acc_sid, self.auth_token)
+        # use jinja2 template to build sms body
+        environment = Environment(loader=FileSystemLoader("templates/"))
+        sms_template = environment.get_template("sms_template.txt")
+        context = {"event_date": row["event_date"],
+                   "event_day_name": row["event_date"].strftime("%A"),
+                   "event_type": row["event_type"],
+                   "first_name": row["first_name"],
+                   "last_name": row["last_name"],
+                   "addnt_identifier": row["addnt_identifier"],
+                   "event_country": row["country_code"]}
+        sms_body = sms_template.render(context)
+
+        tcli = Client(self.acc_sid, self.auth_token)    # init twilio client
+        # send sms
         message = tcli.messages.create(body=sms_body,
                                        from_=self.twilio_sender,
                                        to=self.receiver)
@@ -77,9 +88,3 @@ class SMSReminder:
             df.apply(self.send_sms, axis=1)
 
         return None
-
-
-if __name__ == "__main__":
-    excel_path = Path('.', 'sample_events.xlsx')
-    s_reminder = SMSReminder(heads_up_days=0)
-    s_reminder.send_event_reminder()

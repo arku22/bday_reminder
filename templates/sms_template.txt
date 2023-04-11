@@ -1,0 +1,6 @@
+PERSONAL REMINDER SMS:
+    Event: {{ event_type|capitalize }}
+    Who: {{ first_name|capitalize }}{% if last_name %} {{ last_name|capitalize }}{% endif %}
+    Event Date: {{ event_date }}, {{ event_day_name|capitalize }}
+    Event Country: {{ event_country }}
+    {% if addnt_identifier %}Hint: {{ addnt_identifier|capitalize }}{% endif %}
