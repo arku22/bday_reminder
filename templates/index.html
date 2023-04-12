@@ -1,5 +1,40 @@
 {% extends "base.html" %}
 
 {% block mainbody %}
-    <h1>This is the index page</h1>
+
+    <div class="container text-center my-5">
+        <div class="row">
+            <div class="col">
+
+            </div>
+            <div class="col-10">
+                <table class="table table-responsive table-striped table-hover table-bordered">
+                    <caption class="caption-top">Event Reminders</caption>
+                    <thead class="table-dark">
+                        <tr>
+                            {% for column in columns %}
+                                <th scope="col">{{ column }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% for row in rows %}
+                            <tr>
+                              <th scope="row">{{ row['event_date'] }}</th>
+                              <td>{{ row['event_type'] }}</td>
+                              <td>{{ row['first_name'] }}</td>
+                              <td>{{ row['last_name'] }}</td>
+                              <td>{{ row['addnt_identifier'] }}</td>
+                              <td>{{ row['country_code'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
